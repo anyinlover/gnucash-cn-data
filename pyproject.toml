@@ -1,0 +1,12 @@
+[project]
+name = "gnucash-cn-data"
+version = "0.1.0"
+description = "Script to auto import personal finance data into gnucash"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pandas>=2.2.3",
+    "piecash>=1.2.1",
+    "psycopg2-binary>=2.9.10",
+    "typer>=0.15.2",
+]
