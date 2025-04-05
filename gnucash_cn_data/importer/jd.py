@@ -9,9 +9,9 @@ class JD(Base):
         # The first 21 lines are headers of the table
         df = pd.read_csv(self.csv_path, skiprows=21, index_col=False)
         df = df.map(lambda x: x.strip() if isinstance(x, str) else x).iloc[::-1, :-1]
-        df.loc[:, "金额"] = pd.to_numeric(df["金额"].str.replace(r"\(.*\)", "", regex=True))
+        if df["金额"].dtype == object:
+            df.loc[:, "金额"] = pd.to_numeric(df["金额"].str.replace(r"\(.*\)", "", regex=True))
         self.df = df
-        # self.df = df.fillna(value="")
 
     def fix_noflow(self):
         def fix_func(row: pd.Series):
