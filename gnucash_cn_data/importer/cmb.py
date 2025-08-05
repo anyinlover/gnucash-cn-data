@@ -8,9 +8,11 @@ class CMB(Base):
     def read_csv(self):
         """Read an CMB csv into a pandas DataFrame"""
         # Extract the card number
-        card_id = linecache.getline(str(self.csv_path), 3)[15:31]
+        card_id = linecache.getline(str(self.csv_path), 3)[16:32]
         # The first 6 lines are headers of the table, the last line is the summary line
-        df = pd.read_csv(self.csv_path, skiprows=7, skipfooter=2, index_col=False, engine="python")
+        df = pd.read_csv(
+            self.csv_path, skiprows=7, skipfooter=2, index_col=False, engine="python"
+        )
         df = df.map(lambda x: x.strip() if isinstance(x, str) else x).iloc[::-1]
         df["card_id"] = card_id
         self.df = df.fillna("")
@@ -18,16 +20,10 @@ class CMB(Base):
     def create_format_df(self):
         """Convert original data into Piecash format"""
         df = pd.DataFrame()
-        df["description"] = (
-            self.df["交易类型"]
-            + " "
-            + self.df["交易备注"]
-        )
-        df["post_date"] = pd.to_datetime(self.df["交易日期"], format='%Y%m%d').dt.date
+        df["description"] = self.df["交易类型"] + " " + self.df["交易备注"]
+        df["post_date"] = pd.to_datetime(self.df["交易日期"], format="%Y%m%d").dt.date
         df["amount"] = self.df.apply(
-            lambda row: float(row["收入"])
-            if row["收入"]
-            else -float(row["支出"]),
+            lambda row: float(row["收入"]) if row["收入"] else -float(row["支出"]),
             axis=1,
         )
         df["to"] = self.df["card_id"]
